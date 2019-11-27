@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+## Develop Gatsby in a workspace
+##
+## Usage: fin yarn-ws WORKSPACE
+
+workspace=${@}
+
+container_user="-u docker" fin exec --in=gatsby bash -lc "yarn workspace ${workspace} develop -H 0.0.0.0"

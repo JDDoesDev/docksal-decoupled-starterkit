@@ -1,0 +1,116 @@
+# This file contains your BLT configuration. For a list of all available
+# properties with current values run `blt config:dump`. cd . values come
+# from vendor/acquia/blt/config/build.yml.
+#
+# These values can be overridden at the command line using `--define`, i.e.:
+# blt setup --define project.profile.name=minimal
+#
+# However, when tokens in this file are expanded, they will not use any such
+# command-line overrides. For instance, `blt sync --define drush.aliases.local`
+# will not modify `drush.default_alias`, even though `drush.default_alias` is
+# set to `drush.aliases.local` by default.
+project:
+  # Everyone: This will determine the the directory name of the new repository.
+  # Dev Desktop users: this should match your local site name.
+  machine_name: wearegenuine
+  # Used for enforcing correct git commit msg syntax.
+  prefix: PP
+  human_name: 'We Are Genuine'
+  profile:
+    name: genuine
+  # This will be used as the local uri for all developers.
+  local:
+    protocol: http
+    hostname: '${env.VIRTUAL_HOST}'
+
+# Default to a sync strategy since the reference site is live.
+setup:
+  strategy: sync
+
+sync:
+  # drupal:toggle:modules is added even though it's disabled because there needs to be a command
+  # which replaces source:build:frontend when the override array is combined with the base array
+  # in build.yml.
+  commands:
+    - source:build:composer
+    - blt:init:settings
+    - drupal:sync:db
+    - drupal:update
+    - drupal:toggle:modules
+
+# Configuration settings for new git repository.
+git:
+  default_branch: master-build
+  remotes:
+    - wearegenuine@svn-4140.devcloud.hosting.acquia.com:wearegenuine.git
+
+deploy:
+  # When manually deploying a tag, also tag the source repository.
+  tag_source: false
+
+drush:
+  # You can set custom project aliases in drush/sites/*.site.yml.
+  aliases:
+    # The remote environment from which the database will be pulled.
+    remote: '${project.machine_name}.dev'
+    # The local environment against which all local drush commands are run.
+    local: self
+    # The drush alias against which all ci commands are run.
+    ci: self
+    # The default drush alias to be used when no environment is specified.
+  alias-dir: /home/docker/.drush/sites
+
+cm:
+  allow-overrides: true
+  strategy: config-split
+  core:
+    key: sync
+    dirs:
+      sync:
+        path: ${cm.core.path}/default
+
+# An array of modules to be enabled or uninstalled automatically in local, ci,
+# and deploy contexts.
+modules:
+  local:
+    enable:
+      - dblog
+      - devel
+      - seckit
+      - views_ui
+      - field_ui
+    uninstall:
+      - acquia_connector
+  ci:
+    enable: {  }
+    uninstall:
+      - acquia_connector
+      - shield
+      - dblog
+  dev:
+    enable:
+      - acquia_connector
+    uninstall: {  }
+  test:
+    enable:
+      - acquia_connector
+    uninstall:
+      - devel
+      - views_ui
+      - field_ui
+  prod:
+    enable:
+      - acquia_connector
+    uninstall:
+      - devel
+      - views_ui
+      - dblog
+      - field_ui
+disable-targets:
+  source:
+    build:
+      frontend: TRUE
+  # Handle module toggles in config split
+  drupal:
+    toggle:
+      modules: TRUE

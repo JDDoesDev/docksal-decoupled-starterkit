@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+## Start the Gatsby development server in a workspace
+##
+## Usage: fin gatsby-dev <workspace>
+
+workspace=${@}
+
+if [[ $workspace != "" ]]; then
+  container_user="-u docker" fin exec --in=gatsby bash -lc "yarn workspace ${workspace} develop -H 0.0.0.0"
+else
+  container_user="-u docker" fin exec --in=gatsby bash -lc "yarn develop -H 0.0.0.0"
+fi

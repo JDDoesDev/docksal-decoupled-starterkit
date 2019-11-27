@@ -1,0 +1,3 @@
+wearegenuine:
+  root: /var/www/docroot
+  uri: http://wearegenuine.docksal

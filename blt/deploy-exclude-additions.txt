@@ -1,0 +1,10 @@
+# Exclude install core files.
+docroot/robots.txt
+
+# Exclude development files.
+.github
+.docksal
+.local_dbs
+
+# Exclude the gatsby folder.
+gatsby

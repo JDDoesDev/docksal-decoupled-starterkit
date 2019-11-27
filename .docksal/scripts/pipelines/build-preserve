@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+
+#
+#test ssh conditions
+
+dir_exists=$(ssh docker-host "[ -d $REMOTE_BUILD_DIR ]")
+result=$?
+if [ $result == "0" ]; then
+  # Directory exists so lets pull and reset.
+  # Uncomment for git control.
+  build-exec "git fetch origin && git reset --hard origin/$GIT_BRANCH_NAME"
+  # Uncomment for rsync control.
+  #  rsync --delete -az ${BUILD_DIR}/ docker-host:${REMOTE_BUILD_DIR}
+else
+  # Directory does not exist, must clone.
+  build-init
+fi
+build-exec "fin up"

@@ -1,0 +1,128 @@
+#!/usr/bin/env bash
+
+## Run BLT setup for a site(s).
+##
+## Usage: fin init-site
+
+# Abort if anything fails.
+set -e
+
+BLT_ENVIRONMENT=${SECRET_BLT_ENVIRONMENT:-local}
+
+#-------------------------- Settings --------------------------------
+
+# PROJECT_ROOT and DOCROOT are set as env variables in cli
+SITE_DIRECTORY="default"
+DOCROOT_PATH="${PROJECT_ROOT}/${DOCROOT}"
+SITEDIR_PATH="${DOCROOT_PATH}/sites/${SITE_DIRECTORY}"
+DRUPAL_SITE_NAME="${DRUPAL_SITE_NAME:-My Drupal Site}"
+
+#-------------------------- END: Settings --------------------------------
+
+#-------------------------- Helper functions --------------------------------
+
+# Console colors
+red='\033[0;31m'
+green='\033[0;32m'
+green_bg='\033[1;97;42m'
+yellow='\033[1;33m'
+NC='\033[0m'
+
+echo-red () { echo -e "${red}$1${NC}"; }
+echo-green () { echo -e "${green}$1${NC}"; }
+echo-green-bg () { echo -e "${green_bg}$1${NC}"; }
+echo-yellow () { echo -e "${yellow}$1${NC}"; }
+
+# Copy a settings file.
+# Skips if the destination file already exists.
+# @param $1 source file
+# @param $2 destination file
+copy_settings_file()
+{
+  local source="$1"
+  local dest="$2"
+
+  if [[ ! -f $dest ]]; then
+    echo "Copying ${dest}..."
+    cp "${source}" "${dest}"
+  else
+    echo "${dest} already in place."
+  fi
+}
+
+#-------------------------- END: Helper functions --------------------------------
+
+#-------------------------- Functions --------------------------------
+
+# Initialize local settings files
+init_settings ()
+{
+  # Copy from settings templates
+  fin exec /var/www/vendor/bin/blt blt:init:settings --no-interaction --site="${SITE_DIRECTORY}" --environment="${BLT_ENVIRONMENT}"
+}
+
+copy_setting_includes ()
+{
+  # Copying the default settings include to a local version.
+  copy_settings_file "${SITEDIR_PATH}/settings/default.includes.settings.php" "${SITEDIR_PATH}/settings/includes.settings.php"
+}
+
+install_composer_packages ()
+{
+  # Install composer packages
+  echo "Installing composer packages..."
+  cd "${PROJECT_ROOT}"
+  fin exec composer install
+}
+
+add_blt_aliases ()
+{
+  # Install composer packages
+  echo "Adding BLT aliases..."
+  cd "${PROJECT_ROOT}"
+  fin exec /var/www/vendor/bin/blt blt:init:shell-alias --no-interaction
+}
+
+# Fix file/folder permissions
+fix_permissions ()
+{
+  echo "Making site directory writable..."
+  chmod 755 "${SITEDIR_PATH}"
+}
+
+# Install site
+site_install ()
+{
+  cd "${DOCROOT_PATH}"
+
+  # Generate local drush aliases if they don't already exist.
+  if [ ! -f "${PROJECT_ROOT}/drush/sites/local.site.yml" ]; then
+      echo-yellow "local.site.yml was not found!"
+      echo-green "Generating local.site.yml from example file..."
+      cp ${PROJECT_ROOT}/drush/sites/example.local.site.yml ${PROJECT_ROOT}/drush/sites/local.site.yml
+  fi
+
+  # We disable email sending here so site-install does not return an error
+  # Credit: https://www.drupal.org/project/phpconfig/issues/1826652#comment-12071700
+  fin drush @self sql-create --yes
+
+  # Run the frontend command with a site that will account for all setups.
+  fin exec /var/www/vendor/bin/blt setup -D disable-targets.source.build.frontend=TRUE --no-interaction --environment="${BLT_ENVIRONMENT}"
+
+  # @TODO Build frontend.
+  fin blt source:build:frontend --no-interaction
+}
+
+#-------------------------- END: Functions --------------------------------
+
+#-------------------------- Execution --------------------------------
+
+# Project initialization steps
+fix_permissions
+install_composer_packages
+add_blt_aliases
+copy_setting_includes
+init_settings
+time site_install
+
+#-------------------------- END: Execution --------------------------------

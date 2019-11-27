@@ -1,0 +1,79 @@
+name: 'Docksal Decoupled Drupal'
+type: profile
+description: "Installation profile for decoupled Drupal using GatsbyJS."
+core: 8.x
+
+dependencies:
+  - block
+  - node
+  - system
+  - taxonomy
+
+install:
+  - admin_toolbar
+  - admin_toolbar_tools
+  - adminimal_admin_toolbar
+  - block_content
+  - breakpoint
+  - ckeditor
+  - config
+  - consumer_image_styles
+  - consumers
+  - ctools
+  - datetime
+  - dblog
+  - decoupled_router
+  - devel
+  - dynamic_page_cache
+  - editor
+  - field
+  - field_group
+  - field_ui
+  - file
+  - filter
+  - hal
+  - help
+  - image
+  - jsonapi
+  - jsonapi_defaults
+  - jsonapi_extras
+  - jsonrpc
+  - jsonrpc_core
+  - jsonrpc_discovery
+  - link
+  - markdown
+  - media
+  - media_library
+  - menu_ui
+  - openapi
+  - openapi_ui
+  - openapi_ui_redoc
+  - options
+  - page_cache
+  - path
+  - rdf
+  - schemata
+  - schemata_json_schema
+  - seckit
+  - serialization
+  - shortcut
+  - simple_oauth
+  - simple_oauth_extras
+  - subpathauto
+  - subrequests
+  - text
+  - token
+  - toolbar
+  - update
+  - user
+  - yaml_content
+  - menu_link_content
+  - pathauto
+  - views
+
+themes:
+  - adminimal_theme
+  - bartik
+  - classy
+  - seven
+  - stable

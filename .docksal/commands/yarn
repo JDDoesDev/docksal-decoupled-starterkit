@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+## Run yarn commands
+##
+## Usage: fin yarn COMMAND
+
+ARGS=${@}
+
+cd "${PROJECT_ROOT}/gatsby" || exit
+container_user="-u docker" fin exec --in=gatsby bash -lc "yarn ${ARGS}"
