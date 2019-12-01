@@ -1,6 +1,6 @@
 {
-    "name": "wearegenuine/gen-decoupled",
-    "description": "Genuine's Decoupled Drupal 8 Site.",
+    "name": "jddoesdev/docksal-decoupled",
+    "description": "JDDoesDev Docksal Decoupled Drupal 8 Site.",
     "type": "project",
     "repositories": [
         {
