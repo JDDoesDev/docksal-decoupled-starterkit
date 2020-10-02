@@ -1,7 +1,7 @@
 version: "2.1"
 services:
   cli:
-    image: "docksal/cli:2.8-php7.3"
+    image: "docksal/cli:2.11-php7.3"
     environment:
       - DRUSH_OPTIONS_URI=${VIRTUAL_HOST}
       - VERSION_TAG=${VERSION_TAG}
