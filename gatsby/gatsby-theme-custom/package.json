@@ -5,7 +5,7 @@
   "version": "0.0.1",
   "author": "JD Flynn <jflynn8@gmail.com>",
   "dependencies": {
-    "axios": "^0.18.0",
+    "axios": "^0.21.1",
     "babel-polyfill": "^6.26.0",
     "breakpoint-sass": "^2.7.1",
     "css-loader": "^2.1.1",
