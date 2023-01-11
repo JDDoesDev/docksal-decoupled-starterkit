@@ -39,7 +39,7 @@
     "gatsby-source-drupal": "^3.2.36",
     "gatsby-source-filesystem": "^2.1.31",
     "gatsby-theme-drupal": "^1.0.8",
-    "gatsby-transformer-remark": "^2.3.12",
+    "gatsby-transformer-remark": "^5.25.1",
     "gatsby-transformer-sharp": "^2.2.21",
     "glamor": "^2.20.40",
     "jquery": "^3.5.0",
